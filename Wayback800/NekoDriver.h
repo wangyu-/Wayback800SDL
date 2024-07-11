@@ -80,6 +80,7 @@ private:
 
 protected:
     void run();
+    void run_bak();
 private:
     static void* OnTheadExecute(void* data);
 
