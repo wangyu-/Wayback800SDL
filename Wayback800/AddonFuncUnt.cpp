@@ -21,3 +21,7 @@ bool QRectContains(const QRect& rect, int x, int y)
     // TODO:
     return false;
 }
+
+unsigned int GetTickCount(){
+    return 0;
+}
