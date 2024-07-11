@@ -119,22 +119,33 @@ unsigned short GetWord(unsigned short address);
 
 // Don't use ++/-- in addr, or will be execute multi time
 // TODO: should place io operation in first case to prefer io speed (side effect: slown down other normal memory access)
-#define CPU_PEEK(addr)      ((addr >= 0x80) \
-                            ? *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF))\
-                            : (addr >= iorange?zp40ptr[addr-0x40]:ioread[addr & 0xFF]((BYTE)(addr & 0xff))) )
-#define CPU_PEEKW(addr)     (CPU_PEEK((addr)) + (CPU_PEEK((addr + 1)) << 8))
-#define CPU_POKE(addr, a)   { if ((addr >= 0x80)) { \
-                                if (addr < 0x4000) { \
-                                  *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF)) = (BYTE)(a); \
-                                } else { \
-                                    checkflashprogram(addr, (BYTE)(a)); \
-                                } \
-                              } else if ((addr >= iorange)) { \
-                                zp40ptr[addr-0x40] = (BYTE)(a); \
-                              }  else { \
-                                iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); \
-                              } \
-                            }
+inline uint8_t CPU_PEEK(uint16_t addr){
+    if(addr >= 0x80) {
+      return *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF));
+    }else{
+      return (addr >= iorange?zp40ptr[addr-0x40]:ioread[addr & 0xFF]((BYTE)(addr & 0xff)));
+    }
+}
+
+inline uint16_t CPU_PEEKW(uint16_t addr){
+    return  (CPU_PEEK((addr)) + (CPU_PEEK((addr + 1)) << 8));
+}
+
+inline void CPU_POKE(uint16_t addr, uint8_t a)   
+{ 
+  if ((addr >= 0x80)) { 
+    if (addr < 0x4000) {
+    *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF)) = (BYTE)(a);
+    } else {
+    checkflashprogram(addr, (BYTE)(a));
+    }
+  } else if ((addr >= iorange)) {
+    zp40ptr[addr-0x40] = (BYTE)(a);
+  }  else {
+  iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); 
+  }
+}
+    
 
 enum {  illegal = 0,
         accu,
