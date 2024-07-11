@@ -331,6 +331,7 @@ unsigned logpos = 0;
 
 char logbuff [102400 * 50]; // 5M buffer. no need initialize
 
+#if 0
 WORD LogDisassembly(WORD offset, char* text)
 {
     if (logfile == NULL) {
@@ -461,6 +462,7 @@ WORD LogDisassembly(WORD offset, char* text)
 
     return bytes;
 }
+#endif
 
 const char* GetSymbol(WORD address, int bytes)
 {

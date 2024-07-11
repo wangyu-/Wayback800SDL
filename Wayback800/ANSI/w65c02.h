@@ -23,7 +23,7 @@ typedef struct _regsrec {
     BYTE y;   // index Y
     BYTE ps;  // processor status
     WORD pc;  // program counter
-    WORD sp;  // stack pointer
+    WORD sp;  // stack pointer`
 } regsrec, *regsptr;
 
 extern iofunction1 ioread[0x40];
@@ -119,33 +119,10 @@ unsigned short GetWord(unsigned short address);
 
 // Don't use ++/-- in addr, or will be execute multi time
 // TODO: should place io operation in first case to prefer io speed (side effect: slown down other normal memory access)
-inline uint8_t CPU_PEEK(uint16_t addr){
-    if(addr >= 0x80) {
-      return *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF));
-    }else{
-      return (addr >= iorange?zp40ptr[addr-0x40]:ioread[addr & 0xFF]((BYTE)(addr & 0xff)));
-    }
-}
+uint8_t CPU_PEEK(uint16_t addr);
+uint16_t CPU_PEEKW(uint16_t addr);
+void CPU_POKE(uint16_t addr, uint8_t a);
 
-inline uint16_t CPU_PEEKW(uint16_t addr){
-    return  (CPU_PEEK((addr)) + (CPU_PEEK((addr + 1)) << 8));
-}
-
-inline void CPU_POKE(uint16_t addr, uint8_t a)   
-{ 
-  if ((addr >= 0x80)) { 
-    if (addr < 0x4000) {
-    *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF)) = (BYTE)(a);
-    } else {
-    checkflashprogram(addr, (BYTE)(a));
-    }
-  } else if ((addr >= iorange)) {
-    zp40ptr[addr-0x40] = (BYTE)(a);
-  }  else {
-  iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); 
-  }
-}
-    
 
 enum {  illegal = 0,
         accu,

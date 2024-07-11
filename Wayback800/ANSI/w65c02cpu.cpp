@@ -45,7 +45,6 @@ int mDbgFlag;
 
 int mBCDTable[2][256];
 
-
 //int PS();
 //void PS(int ps);
 

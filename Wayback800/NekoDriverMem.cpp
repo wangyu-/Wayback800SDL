@@ -12,8 +12,10 @@ extern "C" {
 #include <stdlib.h>
 #include "CC800IOName.h"
 #include "NekoDriverIO.h"
+#include "comm.h"
 
 
+void super_switch();
 iofunction1 ioread[0x40]  = {
     Read00BankSwitch,       // $00
     Read01IntStatus,       // $01
@@ -187,6 +189,9 @@ void MemInitialize ()
 
     MemReset();
     InitRAM0IO();
+    if(nc2000){
+        super_switch();
+    }
 }
 
 
@@ -232,6 +237,7 @@ void InitRAM0IO()
 }
 
 // TODO: iofunction?
+/*
 unsigned char GetByte( unsigned short address )
 {
     //unsigned int row = address / 0x2000; // SHR
@@ -251,7 +257,7 @@ void SetByte( unsigned short address, unsigned char value )
 {
     unsigned int row = address / 0x2000; // SHR
     *(pmemmap[row] + address % 0x2000) = value;
-}
+}*/
 
 BYTE __iocallconv NullRead (BYTE address) {
     //qDebug("ggv wanna read io, [%04x] -> %02x", address, mem[address]);
@@ -279,6 +285,9 @@ void TNekoDriver::InitInternalAddrs()
     //b5 :  BOUT   : Battery detect output of level 1
     //b3 :  AUTOBRK: Battery detect output of level 2
     zpioregs[io0C_general_status] = 0x28; // ([0C] & 3) * 1000 || [06] * 10 = LCDAddr
+    if(nc2000){
+        super_switch();
+    }
 }
 
 
@@ -308,6 +317,10 @@ void __iocallconv Write00BankSwitch( BYTE write, BYTE bank )
     // update at last
     zpioregs[io00_bank_switch] = bank;
     (void) write;
+
+    if(nc2000){
+        super_switch();
+    }
 }
 
 BYTE __iocallconv Read00BankSwitch( BYTE )
@@ -368,6 +381,9 @@ void __iocallconv Write0AROABBS( BYTE write, BYTE value )
     // in simulator destination memory is updated before call WriteIO0A_ROA_BBS
     //fixedzpiocache[io0A_roa] = value;
     (void)write;
+    if(nc2000){
+        super_switch();
+    }
 }
 
 // TODO: bank0~127 and bank128~255 to different array
@@ -406,6 +422,10 @@ void __iocallconv Write0DVolumeIDLCDSegCtrl(BYTE write, BYTE value)
     }
     zpioregs[io0D_volumeid] = value;
     (void)write;
+
+    if(nc2000){
+        super_switch();
+    }
 }
 
 // unsigned char zp40cache[0x40]; // the real storage for built-in sram 0x00~0x3F
@@ -444,8 +464,11 @@ void __iocallconv WriteZeroPageBankswitch (BYTE write, BYTE value)
     rw0f_b6_DIR023 = (value & 0x40) != 0;
     rw0f_b7_DIR047 = (value & 0x80) != 0;
     (void)write;
+    if(nc2000){
+        super_switch();
+    }
 }
-
+#if 0
 void TNekoDriver::SwitchNorBank( int bank )
 {
     // TODO: norbank header
@@ -456,6 +479,7 @@ void TNekoDriver::SwitchNorBank( int bank )
     pmemmap[map8000] = (unsigned char*)&fNorBuffer[bank * 0x8000 + 0x4000]; // 8000
     pmemmap[mapA000] = (unsigned char*)&fNorBuffer[bank * 0x8000 + 0x6000]; // A000
 }
+#endif
 
 void TNekoDriver::Switch4000toBFFF( unsigned char bank )
 {
@@ -912,3 +936,153 @@ label_checkpageerase:
 //    //    JUMPOUT(loc_40D680);
 //    return;
 }
+
+uint8_t *ram_io=zpioregs;
+uint8_t * * nor_banks=norbankheader;
+uint8_t ext_ram[0x8000];
+
+uint8_t * (&memmap)[8]=pmemmap;
+
+uint8_t* (&ram_40) = zp40ptr;
+
+uint8_t ram_buff[0x8000];
+//uint8_t* stack = ram_buff + 0x100;
+//uint8_t* ram_40 = ram_buff + 0x40;
+uint8_t* ram00 = fixedram0000;
+uint8_t* ram02 = ram_buff + 0x2000;
+uint8_t* ram_b = ram_buff + 0x4000;
+uint8_t* ram04 = ram_buff + 0x6000;
+uint8_t* GetBank(uint8_t bank_idx){
+	uint8_t volume_idx = ram_io[0x0D];
+    if (bank_idx < num_nor_pages) {
+    	return nor_banks[bank_idx];
+    } else if (bank_idx >= 0x80) {
+
+		if(nc2000){
+			//printf("<%x\n>",bank_idx);
+			//assert(bank_idx==0x80);
+			return ext_ram;
+
+			/*
+			if(bank_idx%2==0)
+			return nc1020_states.ext_ram;
+			else
+			return nc1020_states.ext_ram2; */
+		}
+    }
+    return NULL;
+}
+
+void SwitchBank(){
+	uint8_t bank_idx = ram_io[0x00];
+	uint8_t* bank = GetBank(bank_idx);
+	if(nc2000){
+		if(bank== NULL) return;
+		//assert(bank!=NULL);
+	}
+    memmap[2] = bank;
+    memmap[3] = bank + 0x2000;
+    memmap[4] = bank + 0x4000;
+    memmap[5] = bank + 0x6000;
+}
+
+void SwitchVolume(){
+
+	if(nc2000){
+		memmap[7] = nor_banks[0]+0x6000 -0x4000;
+		bool ramb=  (ram_io[0x0d]&0x04);
+		if(ramb){
+			memmap[1]=ram_b;
+		}else{
+			memmap[1]=ram02;
+		}
+		uint8_t bbs = ram_io[0x0A]&0xf;
+		if (bbs==1) {
+			memmap[6]=ram04;
+		}else if (bbs==0){
+			memmap[6]=nor_banks[0]+0x4000  -0x4000;
+		}else if (bbs==2){
+			memmap[6]=nor_banks[0]+0x8000  -0x4000;
+		}else if (bbs==3) {
+			memmap[6]=nor_banks[0]+0xa000  -0x4000;
+		}else {
+			memmap[6]=nor_banks[bbs/4]+0x2000* (bbs%4);
+		}
+	}
+
+}
+
+void super_switch(){
+	uint8_t roa_bbs=ram_io[0x0a];
+	uint8_t ramb_vol=ram_io[0x0d];
+	uint8_t bs=ram_io[0x00];
+	//if(enable_debug_switch)printf("tick=%llx pc=%x bs=%x roa_bbs=%x ramb_vol=%x\n",tick, nc1020_states.cpu.reg_pc,bs, roa_bbs , ramb_vol);
+
+	if(nc2000){
+		//assert(bs<0x80);
+		if(bs<0x80 &&bs>=num_nor_pages) {
+			//printf("ill bs %x ; ",bs);
+			//printf("tick=%llx pc=%x bs=%x roa_bbs=%x ramb_vol=%x\n",tick, reg_pc,bs, roa_bbs , ramb_vol);
+		}
+		if(bs>=0x80) {
+			//if(bs!=0x80) {printf("<%x>\n",bs);}
+			//assert(bs==0x80);
+		}
+		if(bs>=0x80 && !(roa_bbs&0x80)){
+			if(enable_oops)printf("oops1!\n");
+			//assert(false);
+		}
+		if(bs<0x80 && (roa_bbs&0x80)){
+			if(enable_oops)printf("oops2!\n");
+			//assert(false);
+		}
+		if((ramb_vol&0x03)!=0){
+			if(enable_oops)printf("oops3!\n");
+			assert(false);
+		}
+	}
+
+	SwitchVolume();
+	SwitchBank();
+	uint8_t value= ram_io[0xf];
+	value&=0x7;
+	if(value!=0) {
+		//assert(false);
+	}
+	if(value==0) {
+		ram_40=pmemmap[0]+0x40;
+	}else if(value==1||value==2||value==3){
+		ram_40=pmemmap[0];
+	}else{
+		uint8_t off=value-4;
+		ram_40=pmemmap[0]+0x200+0x40*off;
+	}
+}
+
+uint8_t CPU_PEEK(uint16_t addr){
+    if(addr >= 0x80) {
+      return *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF));
+    }else{
+      return (addr >= iorange?zp40ptr[addr-0x40]:ioread[addr & 0xFF]((BYTE)(addr & 0xff)));
+    }
+}
+
+uint16_t CPU_PEEKW(uint16_t addr){
+    return  (CPU_PEEK((addr)) + (CPU_PEEK((addr + 1)) << 8));
+}
+
+void CPU_POKE(uint16_t addr, uint8_t a)   
+{ 
+  if ((addr >= 0x80)) { 
+    if (addr < 0x4000) {
+    *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF)) = (BYTE)(a);
+    } else {
+    checkflashprogram(addr, (BYTE)(a));
+    }
+  } else if ((addr >= iorange)) {
+    zp40ptr[addr-0x40] = (BYTE)(a);
+  }  else {
+  iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); 
+  }
+}
+    

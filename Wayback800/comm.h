@@ -7,3 +7,8 @@ const uint32_t num_batch_per_second=50;
 const uint32_t ms_per_batch=1000/num_batch_per_second;
 
 const uint32_t num_cycle_per_batch=spdc1016freq/num_batch_per_second;
+
+const uint32_t num_nor_pages=0x10;
+
+const bool nc2000=false;
+const bool enable_oops=false;

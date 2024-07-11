@@ -132,14 +132,18 @@ bool TNekoDriver::RunDemoBin( const std::string& filename )
         // grab from ggv's emulator
         LoadBROM("./ROMs/obj.bin");
 #endif
+        if(!nc2000){
         LoadFullNorFlash("./ROMs/cc800.fls");
+        }else{
+            LoadFullNorFlash("./ROMs/nor.bin");
+        }
         LoadSRAM("./cc800.sram");
-    } else {
+    } /*else {
         LoadDemoNor(filename);
         zpioregs[io00_bank_switch] = 1;
         SwitchNorBank(1);
         *(unsigned short*)&(pmemmap[mapE000][0x1FFC]) = 0x4018; // mario.bin
-    }
+    }*/
     //fEmulatorThread->start(QThread::InheritPriority);
     StopEmulation();
     StartEmulation();
@@ -549,6 +553,9 @@ void EmulatorThread::do_run(uint32_t target_cycle)
         }
 }
 void EmulatorThread::copy_lcd_buffer(){
+        if(nc2000){
+            lcdbuffaddr=0x19c0;
+        }
         if (memcmp(&fixedram0000[lcdbuffaddr & lcdbuffaddrmask], fLCDBuffer, 160*80/8) != 0) {
             memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
             //memcpy(fLCDBuffer, &fixedram0000[0x09c0], 160*80/8);
@@ -560,6 +567,7 @@ void EmulatorThread::copy_lcd_buffer(){
                 fLCDBufferChangeCallback();
             }
         }
+
         //usleep(2000); // SleepGap. 10ms = 10us
 
         if (batchlimiter > 0) {
