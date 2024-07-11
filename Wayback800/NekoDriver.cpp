@@ -15,6 +15,7 @@ extern "C" {
 #include <TargetConditionals.h>
 ////#include "AddonFuncUntObjc.h"
 #include <assert.h>
+#include "comm.h"
 
 
 TScreenBuffer renderLCDBuffer;
@@ -102,7 +103,7 @@ bool TNekoDriver::StartEmulation()
     //    this, SLOT(onLCDBufferChanged(QByteArray*)));
     //fEmulatorThread->start(QThread::InheritPriority);
     fEmulatorThread->SetLCDBufferChangedCallback(fLCDBufferChangeCallback);
-    fEmulatorThread->start();
+    //fEmulatorThread->start();
     return true;
 }
 
@@ -192,11 +193,11 @@ extern bool timer0run;
 extern bool timer1run_tmie;
 extern unsigned short gThreadFlags;
 
-
+/*
 #if !TARGET_IPHONE_SIMULATOR
 #define spdc1016freq 3686400
 #endif
-
+*/
 
 // WQXSIM
 extern bool timer0waveoutstart;
@@ -422,7 +423,7 @@ void EmulatorThread::run_bak()
     RemoveHotlinkMapping();
 }
 
-void EmulatorThread::run()
+void EmulatorThread::pre_run()
 {
     // Load PC from Reset Vector
     CpuInitialize();
@@ -433,12 +434,11 @@ void EmulatorThread::run()
     unsigned int nmistart = GetTickCount();
 #endif
     gThreadFlags &= 0xFFFEu; // Remove 0x01 from gThreadFlags (stack related)
-    while(fKeeping) {
-#ifdef FAMENMI
-        twohznmicycle = spdc1016freq / 2;
-#endif
-        //printf("%ld\n",batchcount);
-        while (batchcount >= 0 && fKeeping) {
+}
+
+void EmulatorThread::do_run(uint32_t target_cycle)
+{
+        while (totalcycle < target_cycle) {
             if (matrixupdated) {
                 matrixupdated = false;
                 AppendLog("keypadmatrix updated.");
@@ -541,7 +541,8 @@ void EmulatorThread::run()
             //usleep(10);
             //Sleep(0);
         }
-
+}
+void EmulatorThread::copy_lcd_buffer(){
         if (memcmp(&fixedram0000[lcdbuffaddr & lcdbuffaddrmask], fLCDBuffer, 160*80/8) != 0) {
             memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
             //memcpy(fLCDBuffer, &fixedram0000[0x09c0], 160*80/8);
@@ -553,17 +554,29 @@ void EmulatorThread::run()
                 fLCDBufferChangeCallback();
             }
         }
-        //TODO why sleep here? this makes the emulator very laggy
-        usleep(2000); // SleepGap. 10ms = 10us
+        //usleep(2000); // SleepGap. 10ms = 10us
 
         if (batchlimiter > 0) {
             batchcount = batchlimiter;
         } else {
             batchcount = spdc1016freq * 2; // dirty fix
         }
-    }
-    //this->deleteLater();
+}
+void EmulatorThread::post_run(){
     RemoveHotlinkMapping();
+}
+void EmulatorThread::run()
+{
+    assert(false);
+    while(fKeeping) {
+#ifdef FAMENMI
+        twohznmicycle = spdc1016freq / 2;
+#endif
+        //printf("%ld\n",batchcount);
+
+
+
+    }
 }
 
 void EmulatorThread::StopKeeping()
@@ -642,6 +655,10 @@ void* EmulatorThread::OnTheadExecute(void *data)
     EmulatorThread* that = (EmulatorThread*)data;
     that->run();
     return 0;
+}
+
+void RunInCurrentThread(){
+    return ;
 }
 
 void EmulatorThread::SetLCDBufferChangedCallback(LCDBufferChangeCallback callback)

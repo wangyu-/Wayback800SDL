@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include "KeyItem.h"
+#include "comm.h"
 using namespace std;
 
 extern TScreenBuffer renderLCDBuffer;
@@ -11,9 +12,6 @@ extern TScreenBuffer renderLCDBuffer;
 const uint32_t SCREEN_WIDTH=160;
 const uint32_t SCREEN_HEIGHT=80;
 const uint32_t LINE_SIZE=2;
-
-const uint32_t FRAME_RATE=100;
-const uint32_t FRAME_INTERVAL= (1000u/FRAME_RATE);
 
 SDL_Renderer* renderer;
 
@@ -215,31 +213,62 @@ void render_call_back(){
           //Render();
         //printf("i am runninging!\n");
 }
+
+void loop_run(){
+    SDL_Event event;
+    map<signed int, bool> mp;
+    bool loop = true;
+    uint64_t start_tick = SDL_GetTicks64();
+    uint64_t expected_tick = 0;
+
+    uint64_t expected_cycle=0;
+
+    theNekoDriver->fEmulatorThread->pre_run();
+
+    while(loop){
+          expected_cycle+=num_cycle_per_batch;
+          theNekoDriver->fEmulatorThread->do_run(expected_cycle);
+          while (SDL_PollEvent(&event)) {
+                    if ( event.type == SDL_QUIT ) {
+                            loop = false;
+                    } else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+                        bool key_down = (event.type == SDL_KEYDOWN);
+
+                        //try to consolidate multiple key shoot into one
+                        //not sure if necessary. But it's helpful for debug
+                        mp[event.key.keysym.sym]= key_down;
+                        for(auto it=mp.begin();it!=mp.end();it++){
+                          handle_key(it->first,it->second);
+                        }
+                    }
+            }
+
+          theNekoDriver->fEmulatorThread->copy_lcd_buffer();
+          Render();
+          expected_tick+=batch_interval;
+          uint64_t actual_tick= SDL_GetTicks64() - start_tick;
+          //if actual is behind expected_tick too much, we only remember 300ms
+          if(actual_tick >expected_tick + 300) {
+            expected_tick = actual_tick-300;
+          }
+
+          // similiar strategy as above
+          if(expected_tick > actual_tick + 300) {
+            actual_tick = expected_tick-300;
+          }
+
+          if(actual_tick <expected_tick) {
+            {SDL_Delay(expected_tick-actual_tick);}
+          }
+    }
+    theNekoDriver->fEmulatorThread->post_run();
+}
 int main()
 {
         InitEverything();
         theNekoDriver = new TNekoDriver();
         theNekoDriver->SetLCDBufferChangedCallback(&render_call_back);
         theNekoDriver->RunDemoBin("");
-        SDL_Event event;
-        map<signed int, bool> mp;
-        bool loop = true;
-        while(loop){
-                while (SDL_PollEvent(&event)) {
-                        if ( event.type == SDL_QUIT ) {
-                                loop = false;
-                        } else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-                            bool key_down = (event.type == SDL_KEYDOWN);
-
-                            //try to consolidate multiple key shoot into one
-                            //not sure if necessary. But it's helpful for debug
-                            mp[event.key.keysym.sym]= key_down;
-                            for(auto it=mp.begin();it!=mp.end();it++){
-                              handle_key(it->first,it->second);
-                            }
-                        }
-                }
-                 Render();
-        }
+        loop_run();
         return 0;
 }

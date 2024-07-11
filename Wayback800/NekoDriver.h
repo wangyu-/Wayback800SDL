@@ -20,8 +20,8 @@ class TNekoDriver
 public:
     TNekoDriver();
     ~TNekoDriver();
-private:
     EmulatorThread* fEmulatorThread;
+private:
     LCDBufferChangeCallback fLCDBufferChangeCallback; // TODO: to StartEmulation
     char* fNorBuffer; // for performance
     char* fBROMBuffer;
@@ -81,6 +81,7 @@ private:
 protected:
     void run();
     void run_bak();
+
 private:
     static void* OnTheadExecute(void* data);
 
@@ -91,6 +92,11 @@ private:
 #endif
 public:
     void start(); // qt
+
+    void pre_run();
+    void do_run(uint32_t);
+    void copy_lcd_buffer();
+    void post_run();
 
 public:
     void StopKeeping();
