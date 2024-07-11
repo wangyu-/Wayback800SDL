@@ -398,8 +398,8 @@ void EmulatorThread::run()
         }
 
         if (memcmp(&fixedram0000[lcdbuffaddr & lcdbuffaddrmask], fLCDBuffer, 160*80/8) != 0) {
-            //memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
-            memcpy(fLCDBuffer, &fixedram0000[0x09c0], 160*80/8);
+            memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
+            //memcpy(fLCDBuffer, &fixedram0000[0x09c0], 160*80/8);
             qDebug("lcdBufferChanged");
             //fprintf(stderr, "lcdBufferChanged\n");
             //emit lcdBufferChanged(new QByteArray((const char*)fLCDBuffer, 160*80/8));
@@ -409,7 +409,7 @@ void EmulatorThread::run()
             }
         }
         //TODO why sleep here? this makes the emulator very laggy
-        //////usleep(10000); // SleepGap. 10ms = 10us
+        //usleep(10000); // SleepGap. 10ms = 10us
 
         if (batchlimiter > 0) {
             batchcount = batchlimiter;
