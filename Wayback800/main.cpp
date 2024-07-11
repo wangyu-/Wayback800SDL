@@ -57,7 +57,7 @@ extern unsigned /*char*/ keypadmatrix[8][8];
         new TKeyItem(44, "B", "1",NULL,{SDLK_b,SDLK_1}),           // P04, P13
         new TKeyItem(45, "N", "2",NULL,{SDLK_n,SDLK_2}),           // P05, P13
         new TKeyItem(46, "M", "3",NULL,{SDLK_m,SDLK_3}),           // P06, P13
-        new TKeyItem(47, "⇞", "税",NULL,{SDLK_SEMICOLON}),   // P07, P13
+        new TKeyItem(47, "⇞", "税",NULL,{SDLK_COMMA}),   // P07, P13
         
         new TKeyItem(30, "A", "log", "10x",{SDLK_a}),       // P00, P14
         new TKeyItem(31, "S", "ln", "ex",{SDLK_s}),       // P01, P14
@@ -83,7 +83,7 @@ extern unsigned /*char*/ keypadmatrix[8][8];
         new TKeyItem(58, "▼", "+",NULL,{SDLK_DOWN}),     // P03, P16
         new TKeyItem(29, "P", "MC", "☎",{SDLK_p}),           // P04, P16
         new TKeyItem(39, "输入", "MR",NULL,{SDLK_RETURN}),   // P05, P16
-        new TKeyItem(49, "⇟", "M-",NULL,{SDLK_QUOTE}), // P06, P16
+        new TKeyItem(49, "⇟", "M-",NULL,{SDLK_SLASH}), // P06, P16
         new TKeyItem(59, "→", "M+",NULL,{SDLK_RIGHT}),   // P07, P16
         
         NULL,       // P00, P17
