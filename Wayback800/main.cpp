@@ -218,8 +218,8 @@ void loop_run(){
     SDL_Event event;
     map<signed int, bool> mp;
     bool loop = true;
-    uint64_t start_tick = SDL_GetTicks64();
-    uint64_t expected_tick = 0;
+    uint64_t start_ms = SDL_GetTicks64();
+    uint64_t expected_ms = 0;
 
     uint64_t expected_cycle=0;
 
@@ -245,20 +245,20 @@ void loop_run(){
 
           theNekoDriver->fEmulatorThread->copy_lcd_buffer();
           Render();
-          expected_tick+=batch_interval;
-          uint64_t actual_tick= SDL_GetTicks64() - start_tick;
+          expected_ms+=ms_per_batch;
+          uint64_t actual_ms= SDL_GetTicks64() - start_ms;
           //if actual is behind expected_tick too much, we only remember 300ms
-          if(actual_tick >expected_tick + 300) {
-            expected_tick = actual_tick-300;
+          if(actual_ms >expected_ms + 300) {
+            expected_ms = actual_ms-300;
           }
 
           // similiar strategy as above
-          if(expected_tick > actual_tick + 300) {
-            actual_tick = expected_tick-300;
+          if(expected_ms > actual_ms + 300) {
+            actual_ms = expected_ms-300;
           }
 
-          if(actual_tick <expected_tick) {
-            {SDL_Delay(expected_tick-actual_tick);}
+          if(actual_ms <expected_ms) {
+            {SDL_Delay(expected_ms-actual_ms);}
           }
     }
     theNekoDriver->fEmulatorThread->post_run();
