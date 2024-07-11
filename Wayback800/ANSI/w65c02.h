@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#define __iocallconv __fastcall
+////#define __iocallconv __fastcall
+#define __iocallconv
 
 typedef BYTE(__iocallconv *iofunction1)(BYTE);
 typedef void (__iocallconv *iofunction2)(BYTE, BYTE);
