@@ -482,6 +482,12 @@ void EmulatorThread::do_run(uint32_t target_cycle)
             }
 
             DWORD CpuTicks = CpuExecute();
+            //if(CpuTicks>30) printf("oops %d\n",CpuTicks);
+
+            // the cycles above doesn't fit wqx well
+            // change to fixed 3 as workaround
+            CpuTicks=3; 
+            //printf("%x\n",CpuTicks);
             totalcycle += CpuTicks;
             twohznmicycle -= CpuTicks;
             // add checks for reset, IRQ, NMI, and other pin signals

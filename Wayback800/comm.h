@@ -1,6 +1,6 @@
 #include <unistd.h>
 
-const uint32_t spdc1016freq=3686400*5;
+const uint32_t spdc1016freq=3686400*1;
 
 const uint32_t num_batch_per_second=50;
 
