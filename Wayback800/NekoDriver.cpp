@@ -433,36 +433,12 @@ void EmulatorThread::run()
     unsigned int nmistart = GetTickCount();
 #endif
     gThreadFlags &= 0xFFFEu; // Remove 0x01 from gThreadFlags (stack related)
-#ifdef AUTOTEST
-    unsigned totalline = 0; // TODO: long long
-    enablelogging = false;
-#endif
     while(fKeeping) {
-#if TARGET_IPHONE_SIMULATOR
-        const unsigned spdc1016freq = GlobalSetting.SPDC1016Frequency;
-#endif
 #ifdef FAMENMI
         twohznmicycle = spdc1016freq / 2;
 #endif
         //printf("%ld\n",batchcount);
         while (batchcount >= 0 && fKeeping) {
-#ifdef AUTOTEST
-            totalline++;
-            TryTest(totalline);
-#endif // AUTOTEST
-#ifdef LOGASM
-#ifdef AUTOTEST
-            if (enablelogging) {
-#endif
-#ifdef HANDYPSP
-                LogDisassembly(mPC, NULL);
-#else
-                LogDisassembly(regs.pc, NULL);
-#endif // HANDYPSP
-#ifdef AUTOTEST
-            }
-#endif // AUTOTEST
-#endif // LOGASM
             if (matrixupdated) {
                 matrixupdated = false;
                 AppendLog("keypadmatrix updated.");
@@ -544,7 +520,6 @@ void EmulatorThread::run()
             // TODO: dynamic re-measure
             if (measured == false && totalcycle % spdc1016freq < 10 && totalcycle > spdc1016freq) {
                 measured = true;
-#if !TARGET_IPHONE_SIMULATOR
                 // fixed rate on device
                 // realworld time = 106
 #ifdef HANDYPSP
@@ -553,44 +528,6 @@ void EmulatorThread::run()
                 batchlimiter = spdc1016freq / 4;
 #endif
                 batchcount = batchlimiter;
-#else
-                if (totalcycle < spdc1016freq * 2) {
-                    // first loop check!
-                    // spdc1016 executed one second in fullspeed virtual timeline
-                    unsigned long long realworldtime = GetTickCount() - lastTicket; // should less than 1000ms
-                    lastTicket = GetTickCount();
-                    //double virtual100ms = realworldtime / 100.0;
-                    qDebug("realworldtime:%llu", realworldtime);
-                    fprintf(stderr, "realworldtime:%llu\n", realworldtime);
-                    if (realworldtime > 1000) {
-                        // TODO: device may slower than simulator
-                        // in my test iPad I get 3528/3779/3630 msec to finish one sdpc1016freq loop
-                        // we should make screen refresh at least twice per real world second or screen will never been updated
-                        // 1000->500 2000->250 4000->125
-                        batchlimiter = 500 * spdc1016freq / realworldtime;
-                        if (remeasure) {
-                            qDebug("remeasure on batchlimiter: %u", batchlimiter);
-                            fprintf(stderr, "remeasure on batchlimiter: %u\n", batchlimiter);
-                            measured = false;
-                            totalcycle = 0;
-                            remeasure--;
-                        }
-                        batchcount = batchlimiter;
-                    } else if (batchlimiter == 0) {
-                        // 1000 - realworldtime = overflow time, overflow time / 10 = sleepcount, freq / sleepcount = batchcount
-                        //batchlimiter = spdc1016freq / ((1000 - realworldtime) / 10);
-                        sleepcount = (1000 - realworldtime) / sleepgap;
-                        batchlimiter = spdc1016freq * sleepgap / (1000 - realworldtime);
-                    } else {
-                        // wrong path?
-                        // sleep(0) is less than 10ms, but we'd never go here
-                    }
-                    batchcount = batchlimiter;
-                } else {
-                    // totalcycle > spdc1016freq * 2
-                    // TODO:  check once more
-                }
-#endif // TARGET_IPHONE_SIMULATOR
             } // measured == false && totalcycle % spdc1016freq < 10 && totalcycle > spdc1016freq 
             if (totalcycle % spdc1016freq > 10 && totalcycle > spdc1016freq) {
                 // FIXME: bug on slow device
