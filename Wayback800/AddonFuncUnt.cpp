@@ -1,5 +1,5 @@
 #include "AddonFuncUnt.h"
-
+#include <SDL2/SDL.h>
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MACX)
 #   include <unistd.h>
@@ -23,5 +23,5 @@ bool QRectContains(const QRect& rect, int x, int y)
 }
 
 unsigned int GetTickCount(){
-    return 0;
+    return SDL_GetTicks();
 }

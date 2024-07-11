@@ -334,10 +334,10 @@ char logbuff [102400 * 50]; // 5M buffer. no need initialize
 WORD LogDisassembly(WORD offset, char* text)
 {
     if (logfile == NULL) {
-        ////std::string documentsfolder = GetDocumentsPath();
-        char* filepath ;////= new char[documentsfolder.length() + 20];
-        ////strcpy(filepath, documentsfolder.c_str());
-        ////strcat(filepath, "/Sim800.txt");
+        std::string documentsfolder = "./";
+        char* filepath = new char[100 + 20];
+        strcpy(filepath, documentsfolder.c_str());
+        strcat(filepath, "/Sim800.txt");
         //logfile = _tfopen(filepath, TEXT("w"));
         logfile = fopen(filepath, "wt");
         delete[] filepath;

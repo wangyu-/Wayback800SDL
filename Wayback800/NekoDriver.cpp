@@ -126,13 +126,13 @@ bool TNekoDriver::RunDemoBin( const std::string& filename )
     if (filename.empty()) {
 #ifdef USE_BUSROM
         // BROM dumped from real PC1000
-        ////LoadBROM(GetResourcePath() + "/brom.bin");
+        LoadBROM("./ROMs/brom.bin");
 #else
         // grab from ggv's emulator
-        ////LoadBROM(GetResourcePath() + "/obj.bin");
+        LoadBROM("./ROMs/obj.bin");
 #endif
-        ////LoadFullNorFlash(GetDocumentsPath() + "/cc800.fls");
-        ////LoadSRAM(GetDocumentsPath() + "/cc800.sram");
+        LoadFullNorFlash("./ROMs/cc800.fls");
+        LoadSRAM("./cc800.sram");
     } else {
         LoadDemoNor(filename);
         zpioregs[io00_bank_switch] = 1;
