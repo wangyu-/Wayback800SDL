@@ -1,7 +1,7 @@
 #ifndef HANDYPSP
 
 extern "C" {
-#include "65c02.h"
+#include "65C02.h"
 }
 
 DWORD     autoboot          = 0;

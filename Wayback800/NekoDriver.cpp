@@ -1,5 +1,5 @@
 #include "NekoDriver.h"
-#include "DBCentre.h"
+#include "DbCentre.h"
 extern "C" {
 #ifdef HANDYPSP
 #include "ANSI/w65c02.h"
@@ -397,8 +397,9 @@ void EmulatorThread::run()
             //Sleep(0);
         }
 
-        if (memcmp(&fixedram0000[lcdbuffaddr & lcdbuffaddrmask], fLCDBuffer, 160*80/8) != 0) {
-            memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
+        if (true||memcmp(&fixedram0000[lcdbuffaddr & lcdbuffaddrmask], fLCDBuffer, 160*80/8) != 0) {
+            //memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
+            memcpy(fLCDBuffer, &fixedram0000[0x09c0], 160*80/8);
             qDebug("lcdBufferChanged");
             //fprintf(stderr, "lcdBufferChanged\n");
             //emit lcdBufferChanged(new QByteArray((const char*)fLCDBuffer, 160*80/8));
