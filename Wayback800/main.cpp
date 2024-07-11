@@ -212,7 +212,7 @@ void handle_key(signed int sym, bool key_down){
 }
 
 void render_call_back(){
-          Render();
+          //Render();
         //printf("i am runninging!\n");
 }
 int main()
@@ -239,6 +239,7 @@ int main()
                             }
                         }
                 }
+                 Render();
         }
         return 0;
 }

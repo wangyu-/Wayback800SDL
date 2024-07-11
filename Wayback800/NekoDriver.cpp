@@ -237,6 +237,7 @@ void EmulatorThread::run()
 #ifdef FAMENMI
         twohznmicycle = spdc1016freq / 2;
 #endif
+        //printf("%ld\n",batchcount);
         while (batchcount >= 0 && fKeeping) {
 #ifdef AUTOTEST
             totalline++;
@@ -264,7 +265,7 @@ void EmulatorThread::run()
             // 2Hz NMI
             // TODO: use batchcount as NMI source
 #ifdef FAKENMI
-            if (nmicount % 400000 == 0) {
+            if (nmicount % (spdc1016freq/2) == 0) {
                 nmicount = 0; // MERGEASM
             //if (twohznmicycle < 0) {
             //    twohznmicycle = spdc1016freq / 2; // reset
@@ -409,7 +410,7 @@ void EmulatorThread::run()
             }
         }
         //TODO why sleep here? this makes the emulator very laggy
-        //usleep(10000); // SleepGap. 10ms = 10us
+        usleep(2000); // SleepGap. 10ms = 10us
 
         if (batchlimiter > 0) {
             batchcount = batchlimiter;
