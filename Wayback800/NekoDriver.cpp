@@ -446,7 +446,7 @@ void EmulatorThread::do_run(uint32_t target_cycle)
             // 2Hz NMI
             // TODO: use batchcount as NMI source
 #ifdef FAKENMI
-            if (nmicount % (spdc1016freq/2) == 0) {
+            if (nmicount % (400000) == 0) {
                 nmicount = 0; // MERGEASM
             //if (twohznmicycle < 0) {
             //    twohznmicycle = spdc1016freq / 2; // reset
