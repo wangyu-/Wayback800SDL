@@ -7,13 +7,18 @@
 #ifndef _WIN32
 #include <pthread.h>
 #endif
-#include "CheatTypes.h"
+////#include "CheatTypes.h"
 
 #define qDebug(...)
 
 class EmulatorThread;
 
 typedef void(*LCDBufferChangeCallback)();
+
+struct TScreenBuffer
+{
+    unsigned char fPixel[160*80/8];
+};
 
 class TNekoDriver
 {
