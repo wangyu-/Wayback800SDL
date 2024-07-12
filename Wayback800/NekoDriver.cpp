@@ -215,7 +215,7 @@ void CheckSleepFlagAndForceWakeup();
 bool KeepTimer01( unsigned int cpuTick );
 bool KeepTimer01Fake( unsigned int cpuTick );
 
-
+/*
 void EmulatorThread::run_bak()
 {
     // Load PC from Reset Vector
@@ -238,7 +238,6 @@ void EmulatorThread::run_bak()
 #ifdef FAMENMI
         twohznmicycle = spdc1016freq / 2;
 #endif
-        //printf("%ld\n",batchcount);
         while (batchcount >= 0 && fKeeping) {
 #ifdef AUTOTEST
             totalline++;
@@ -266,7 +265,7 @@ void EmulatorThread::run_bak()
             // 2Hz NMI
             // TODO: use batchcount as NMI source
 #ifdef FAKENMI
-            if (nmicount % (4000) == 0) {
+            if (nmicount % 400000 == 0) {
                 nmicount = 0; // MERGEASM
             //if (twohznmicycle < 0) {
             //    twohznmicycle = spdc1016freq / 2; // reset
@@ -401,7 +400,6 @@ void EmulatorThread::run_bak()
 
         if (memcmp(&fixedram0000[lcdbuffaddr & lcdbuffaddrmask], fLCDBuffer, 160*80/8) != 0) {
             memcpy(fLCDBuffer, &fixedram0000[lcdbuffaddr & lcdbuffaddrmask], 160*80/8);
-            //memcpy(fLCDBuffer, &fixedram0000[0x09c0], 160*80/8);
             qDebug("lcdBufferChanged");
             //fprintf(stderr, "lcdBufferChanged\n");
             //emit lcdBufferChanged(new QByteArray((const char*)fLCDBuffer, 160*80/8));
@@ -410,9 +408,8 @@ void EmulatorThread::run_bak()
                 fLCDBufferChangeCallback();
             }
         }
-        //TODO why sleep here? this makes the emulator very laggy
-        usleep(2000); // SleepGap. 10ms = 10us
 
+        usleep(10000); // SleepGap. 10ms = 10us
         if (batchlimiter > 0) {
             batchcount = batchlimiter;
         } else {
@@ -421,7 +418,8 @@ void EmulatorThread::run_bak()
     }
     //this->deleteLater();
     RemoveHotlinkMapping();
-}
+}*/
+
 
 void EmulatorThread::pre_run()
 {
