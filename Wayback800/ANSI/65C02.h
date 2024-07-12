@@ -74,6 +74,11 @@ extern unsigned char* volume1array[0x100];
 extern unsigned char* bbsbankheader[0x10];
 extern unsigned char* zp40ptr;  // used in io_zp_bsw
 
+#ifdef USE_BUSROM
+extern unsigned char* volume2array[0x100];
+extern unsigned char* volume3array[0x100];
+#endif
+
 #define iorange 0x40
 extern regsrec    regs;
 extern BOOL       restart;
