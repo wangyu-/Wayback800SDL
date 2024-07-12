@@ -1,5 +1,5 @@
 #include "NekoDriver.h"
-#include "DbCentre.h"
+////#include "DbCentre.h"
 extern "C" {
 #ifdef HANDYPSP
 #include "ANSI/w65c02.h"
@@ -9,7 +9,7 @@ extern "C" {
 }
 #include "CC800IOName.h"
 #include "NekoDriverIO.h"
-#include "AddonFuncUnt.h" // GetTickCount
+////#include "AddonFuncUnt.h" // GetTickCount
 #include <unistd.h> // usleep
 #include <stdio.h>
 #include <TargetConditionals.h>
