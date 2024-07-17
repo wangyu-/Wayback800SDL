@@ -84,8 +84,9 @@ extern unsigned /*char*/ keypadmatrix[8][8];
         new TKeyItem(49, "⇟", "M-",NULL,{SDLK_SLASH}), // P06, P16
         new TKeyItem(59, "→", "M+",NULL,{SDLK_RIGHT}),   // P07, P16
         
-        NULL,       // P00, P17
-        NULL,       // P01, P17
+        new TKeyItem(16, "Fx", NULL, "修改",{SDLK_SEMICOLON}),       // P00, P17
+        new TKeyItem(17, "Fx", NULL, "修改",{SDLK_QUOTE}),       // P01, P17
+
         new TKeyItem(12, "F1", NULL, "插入",{SDLK_F1}),       // P02, P17
         new TKeyItem(13, "F2", NULL, "删除",{SDLK_F2}),       // P03, P17
         new TKeyItem(14, "F3", NULL, "查找",{SDLK_F3}),       // P04, P17

@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include "stdio.h"
+
 ////#define __iocallconv __fastcall
 #define __iocallconv
 
@@ -142,7 +144,15 @@ inline void CPU_POKE(uint16_t addr, uint8_t a)
   } else if ((addr >= iorange)) {
     zp40ptr[addr-0x40] = (BYTE)(a);
   }  else {
-  iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); 
+    if(addr==34) {
+      printf("<w %02x>",a);
+    }
+    else if(addr==35){
+      printf("[w %02x]\n",a);
+    } else {
+        iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); 
+    }
+
   }
 }
     
