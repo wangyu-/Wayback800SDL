@@ -6,6 +6,8 @@
 
 <img width="322" alt="image" src="https://github.com/user-attachments/assets/0ffac3f8-6b39-4bec-8d00-63f4cef254ad">
 
+目前在MacOS和Linux上编译通过，还需要再稍微改改才能支持Windows
+
 ## 按键
 特殊键：
 
