@@ -8,6 +8,7 @@ extern "C" {
 }
 #include "CC800IOName.h"
 #include "NekoDriverIO.h"
+#include <string.h>
 
 
 bool timer0run = false;

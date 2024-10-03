@@ -12,11 +12,12 @@ extern "C" {
 ////#include "AddonFuncUnt.h" // GetTickCount
 #include <unistd.h> // usleep
 #include <stdio.h>
-#include <TargetConditionals.h>
+//#include <TargetConditionals.h>
 ////#include "AddonFuncUntObjc.h"
 #include <assert.h>
 #include "comm.h"
-
+#include <string.h>
+#include <limits.h>
 
 TScreenBuffer renderLCDBuffer;
 

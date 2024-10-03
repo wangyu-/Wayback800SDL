@@ -10,6 +10,7 @@ extern "C" {
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include "CC800IOName.h"
 #include "NekoDriverIO.h"
 

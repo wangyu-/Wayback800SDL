@@ -7,7 +7,7 @@ extern "C" {
 #endif
 }
 ////#include "AddonFuncUntObjc.h"
-
+#include <string.h>
 
 
 #define  INVALID1        1

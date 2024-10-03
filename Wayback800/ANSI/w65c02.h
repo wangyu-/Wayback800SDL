@@ -10,7 +10,7 @@
 #endif
 #include <stdlib.h>
 #include <sys/types.h>
-
+#include <stdint.h>
 ////#define __iocallconv __fastcall
 #define __iocallconv
 

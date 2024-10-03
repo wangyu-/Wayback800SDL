@@ -1,6 +1,6 @@
 #include "KeyItem.h"
 //#include "AddonFuncUnt.h"
-#include <TargetConditionals.h>
+//#include <TargetConditionals.h>
 
 
 /*TKeyItem::TKeyItem( int ID, const char* graphic, const char* subscript )
