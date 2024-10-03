@@ -75,7 +75,7 @@ extern unsigned char zpioregs[0x40];
 #define _ADD_TM1I_BIT() zpioregs[io01_int_status] |= 0x20
 
 // io01_int_status use zpioregs.
-extern BYTE w01_int_enable;
+////extern BYTE w01_int_enable;
 
 extern int timer0ticks;
 extern int timer1ticks;

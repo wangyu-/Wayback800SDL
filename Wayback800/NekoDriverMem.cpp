@@ -218,7 +218,7 @@ void InitRAM0IO()
    memset(zpioregs, 0, sizeof(zpioregs));
     zpioregs[io1B_pwm_data] = 0;
     zpioregs[io01_int_status] = 0; 
-    w01_int_enable = 0; // Enable all IRQ int
+    ////w01_int_enable = 0; // Enable all IRQ int
     zpioregs[io04_general_ctrl] = 0;
     zpioregs[io05_clock_ctrl] = 0;
     gThreadFlags = 0;

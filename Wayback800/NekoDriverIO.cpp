@@ -62,7 +62,7 @@ unsigned char zpioregs[0x40];
 int timer0ticks = 0;
 int timer1ticks = 0;
 
-BYTE w01_int_enable = 0;
+////BYTE w01_int_enable = 0;
 
 BYTE __iocallconv Read05StartTimer0( BYTE ) // 05
 {
@@ -582,7 +582,7 @@ BYTE __iocallconv Read01IntStatus( BYTE )
 
 void __iocallconv Write01IntEnable( BYTE write, BYTE value )
 {
-    w01_int_enable = value;
+    ////w01_int_enable = value;
     (void)write;
 }
 

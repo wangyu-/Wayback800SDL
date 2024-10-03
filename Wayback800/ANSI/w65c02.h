@@ -145,10 +145,10 @@ inline void CPU_POKE(uint16_t addr, uint8_t a)
     zp40ptr[addr-0x40] = (BYTE)(a);
   }  else {
     if(addr==34) {
-      printf("<w %02x>",a);
+      printf("0x%02x,",a);
     }
     else if(addr==35){
-      printf("[w %02x]\n",a);
+      printf("0x%02x,\n",a);
     } else {
         iowrite[addr & 0xFF]((BYTE)(addr & 0xff),(BYTE)(a)); 
     }
