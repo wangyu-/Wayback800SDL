@@ -485,7 +485,7 @@ void EmulatorThread::do_run(uint32_t target_cycle)
 
             // the cycles above doesn't fit wqx well
             // change to fixed 3 as workaround
-            CpuTicks=3; 
+            //CpuTicks=3; 
             //printf("%x\n",CpuTicks);
             totalcycle += CpuTicks;
             twohznmicycle -= CpuTicks;

@@ -54,12 +54,13 @@
 #define xZEROPAGE()             {mOperand=CPU_PEEK(mPC);mPC++;}
 #define xZEROPAGE_X()           {mOperand=CPU_PEEK(mPC)+mX;mPC++;mOperand&=0xff;}
 #define xZEROPAGE_Y()           {mOperand=CPU_PEEK(mPC)+mY;mPC++;mOperand&=0xff;}
-#define xABSOLUTE_X()           {mOperand=CPU_PEEKW(mPC);mPC+=2;mOperand+=mX;mOperand&=0xffff;}
-#define xABSOLUTE_Y()           {mOperand=CPU_PEEKW(mPC);mPC+=2;mOperand+=mY;mOperand&=0xffff;}
+#define xABSOLUTE_X()           {mOperand=CPU_PEEKW(mPC);mPC+=2;cycle+=(mOperand>>8!=(mOperand+mX)>>8);mOperand+=mX;mOperand&=0xffff;}
+#define xABSOLUTE_Y()           {mOperand=CPU_PEEKW(mPC);mPC+=2;cycle+=(mOperand>>8!=(mOperand+mY)>>8);mOperand+=mY;mOperand&=0xffff;}
 #define xINDIRECT_ABSOLUTE_X()  {mOperand=CPU_PEEKW(mPC);mPC+=2;mOperand+=mX;mOperand&=0xffff;mOperand=CPU_PEEKW(mOperand);}
 #define xRELATIVE()             {mOperand=CPU_PEEK(mPC);mPC++;mOperand=(mPC+mOperand)&0xffff;}
-#define xINDIRECT_X()           {mOperand=CPU_PEEK(mPC);mPC++;mOperand=mOperand+mX;mOperand&=0x00ff;mOperand=CPU_PEEKW(mOperand);}
-#define xINDIRECT_Y()           {mOperand=CPU_PEEK(mPC);mPC++;mOperand=CPU_PEEKW(mOperand);mOperand=mOperand+mY;mOperand&=0xffff;}
+#define xINDIRECT_X()           {mOperand=CPU_PEEK(mPC);mPC++;mOperand+=mX;mOperand&=0x00ff;mOperand=CPU_PEEKW(mOperand);}
+#define xINDIRECT_Y()           {mOperand=CPU_PEEK(mPC);mPC++;mOperand=CPU_PEEKW(mOperand);mOperand+=mY;mOperand&=0xffff;}
+#define xINDIRECT_Y2()          {mOperand=CPU_PEEK(mPC);mPC++;mOperand=CPU_PEEKW(mOperand);cycle+=(mOperand>>8!=(mOperand+mY)>>8);mOperand+=mY;mOperand&=0xffff;}
 #define xINDIRECT_ABSOLUTE()    {mOperand=CPU_PEEKW(mPC);mPC+=2;mOperand=CPU_PEEKW(mOperand);}
 #define xINDIRECT()             {mOperand=CPU_PEEK(mPC);mPC++;mOperand=CPU_PEEKW(mOperand);}
 
@@ -166,6 +167,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -182,6 +184,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -198,6 +201,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -240,6 +244,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -256,6 +261,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -272,6 +278,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -341,6 +348,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -357,6 +365,7 @@
     {\
         int offset=(signed char)CPU_PEEK(mPC);\
         mPC++;\
+        cycle+=(mPC >> 8 == (mPC+offset) >> 8)?1:2;\
         mPC+=offset;\
         mPC&=0xffff;\
     }\
@@ -594,7 +603,7 @@
 
 #define xPHP()\
 {\
-    PUSH(PS() | 0x30);\
+    PUSH(PS()|0x30);\
 }
 
 #define xPHX()\
@@ -617,7 +626,7 @@
 {\
     int P;\
     PULL(P);\
-    setPS(P & 0xCF);\
+    setPS(P&0xCF);\
 }
 
 #define xPLX()\
