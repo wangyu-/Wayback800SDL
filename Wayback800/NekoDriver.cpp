@@ -116,9 +116,11 @@ bool TNekoDriver::StopEmulation()
         //fEmulatorThread->deleteLater();
         fEmulatorThread = NULL;
         if (fFlashUpdated) {
+            //uncomment below to enable save-flash-on-exit feature
             SaveFullNorFlash();
         }
-        SaveFullSRAM();
+        //uncomment below to enable save-ram-on-exit
+        //SaveFullSRAM();
     }
     return true;
 }

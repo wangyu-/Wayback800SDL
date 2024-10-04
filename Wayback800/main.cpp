@@ -270,5 +270,6 @@ int main()
         theNekoDriver->SetLCDBufferChangedCallback(&render_call_back);
         theNekoDriver->RunDemoBin("");
         loop_run();
+        theNekoDriver->StopEmulation();
         return 0;
 }
