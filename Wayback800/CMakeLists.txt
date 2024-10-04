@@ -3,7 +3,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_FLAGS "-O2 -g3 -fsanitize=address -I/opt/homebrew/include")
 
-set(COMMON_FLAGS "-O2 -g3 -pthread -Wno-deprecated-declarations -DHANDYPSP -DUSE_BUSROM -DFAKENMI -D_LOGASM")
+set(COMMON_FLAGS "-O2 -g3 -pthread -Wno-deprecated-declarations -DHANDYPSP -DUSE_BUSROM -D_FAKENMI -D_LOGASM")
 set(CMAKE_CXX_FLAGS ${COMMON_FLAGS})
 set(CMAKE_C_FLAGS ${COMMON_FLAGS})
 find_package(SDL2 REQUIRED)

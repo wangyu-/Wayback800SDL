@@ -422,6 +422,7 @@ void EmulatorThread::run_bak()
 }*/
 
 
+unsigned int nmistart;
 void EmulatorThread::pre_run()
 {
     // Load PC from Reset Vector
@@ -430,7 +431,7 @@ void EmulatorThread::pre_run()
     lcdoffshift0flag = false;
     //g_stp = 1; // test
 #ifndef FAKENMI
-    unsigned int nmistart = GetTickCount();
+    nmistart = GetTickCount();
 #endif
     gThreadFlags &= 0xFFFEu; // Remove 0x01 from gThreadFlags (stack related)
 }
