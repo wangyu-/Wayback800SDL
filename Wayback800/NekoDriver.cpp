@@ -438,7 +438,7 @@ void EmulatorThread::pre_run()
     gThreadFlags &= 0xFFFEu; // Remove 0x01 from gThreadFlags (stack related)
 }
 
-void EmulatorThread::do_run(uint32_t target_cycle)
+void EmulatorThread::do_run(uint64_t target_cycle)
 {
         while (totalcycle < target_cycle) {
             if (matrixupdated) {

@@ -100,7 +100,7 @@ public:
     void start(); // qt
 
     void pre_run();
-    void do_run(uint32_t);
+    void do_run(uint64_t);
     void copy_lcd_buffer();
     void post_run();
 
