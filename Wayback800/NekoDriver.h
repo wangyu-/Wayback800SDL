@@ -72,9 +72,10 @@ protected:
 #ifndef _WIN32
     pthread_t fThreadID;
 #endif
+public:
+    unsigned long long totalcycle;
 private:
     unsigned int lastTicket;
-    unsigned long long totalcycle;
     //const unsigned spdc1016freq = 3686400;
     bool measured;
     unsigned remeasure;

@@ -213,7 +213,7 @@ void render_call_back(){
           //Render();
         //printf("i am runninging!\n");
 }
-
+uint64_t *current_cycle_ptr;
 void loop_run(){
     SDL_Event event;
     map<signed int, bool> mp;
@@ -228,6 +228,8 @@ void loop_run(){
     while(loop){
           expected_cycle+=num_cycle_per_batch;
           theNekoDriver->fEmulatorThread->do_run(expected_cycle);
+          void post_cpu_run_sound_handling();
+          post_cpu_run_sound_handling();
           while (SDL_PollEvent(&event)) {
                     if ( event.type == SDL_QUIT ) {
                             loop = false;
@@ -266,9 +268,12 @@ void loop_run(){
 int main()
 {
         InitEverything();
+        void init_audio();
+        init_audio();
         theNekoDriver = new TNekoDriver();
         theNekoDriver->SetLCDBufferChangedCallback(&render_call_back);
         theNekoDriver->RunDemoBin("");
+        current_cycle_ptr=&theNekoDriver->fEmulatorThread->totalcycle;
         loop_run();
         theNekoDriver->StopEmulation();
         return 0;

@@ -548,6 +548,11 @@ void __iocallconv Write18Port4( BYTE write, BYTE value )
         qDebug("W CLK%c: O%dI%d, DATA%c: O%dI%d", hotlinkios->w07_b5_DIR45?'O':'I', hotlinkios->w18_b5_P45OL,hotlinkios->r18_b5_P45ID,  hotlinkios->w07_b6_DIR46?'O':'I',  hotlinkios->w18_b6_P46OL,hotlinkios->r18_b6_P46ID);
     }
 
+    int a=value &0x80;
+    if (a==0) a=-1;
+    void beeper_on_io_write(int);
+    beeper_on_io_write(a);
+
     (void)write;
         }
 
