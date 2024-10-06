@@ -73,7 +73,7 @@ protected:
     pthread_t fThreadID;
 #endif
 public:
-    unsigned long long totalcycle;
+    uint64_t totalcycle;
 private:
     unsigned int lastTicket;
     //const unsigned spdc1016freq = 3686400;
