@@ -12,14 +12,17 @@
 {
 }*/
 
-TKeyItem::TKeyItem( int ID, const char* graphic, const char* subscript, const char* label, vector<int> sdl_keys0)
-    : fRow(ID / 10)
-    , fColumn(ID % 10)
-    , fGraphic(graphic)
+TKeyItem::TKeyItem( int ID, int code_y,int code_x, const char* graphic, const char* subscript, const char* label, vector<int> sdl_keys0)
+    : //fRow(ID / 10)
+    //, fColumn(ID % 10)
+    //, 
+    fGraphic(graphic)
     , fSubscript(subscript)
     , fSuperLabel(label)
     , sdl_keys(sdl_keys0)
 {
+    this->code_y=code_y;
+    this->code_x=code_x;
 }
 
 

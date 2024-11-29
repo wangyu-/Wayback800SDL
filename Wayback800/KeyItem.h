@@ -7,16 +7,18 @@ using std::vector;
 
 struct TKeyItem {
     //TKeyItem(int ID, const char* graphic, const char* subscript);
-    TKeyItem(int ID, const char* graphic, const char* subscript, const char* label,vector<int>);
+    TKeyItem(int ID, int code_y, int code_x, const char* graphic, const char* subscript, const char* label,vector<int>);
 
-    int fRow;
-    int fColumn;
+    //int fRow;
+    //int fColumn;
     const char* fGraphic; // TODO:
     const char* fSubscript;
     const char* fSuperLabel; // label on top
 
 
-    int tag=0;
+    //int tag=0;
+    int code_y;
+    int code_x;
     vector<int> sdl_keys;
 };
 
