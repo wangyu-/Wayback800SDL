@@ -158,8 +158,8 @@ unsigned char* norbankheader[0x10];
 unsigned char* volume0array[0x100]; // even volume
 unsigned char* volume1array[0x100]; // odd volume
 #ifdef USE_BUSROM
-unsigned char* volume2array[0x100];
-unsigned char* volume3array[0x100];
+//unsigned char* volume2array[0x100];
+//unsigned char* volume3array[0x100];
 #endif
 unsigned char* bbsbankheader[0x10];
 

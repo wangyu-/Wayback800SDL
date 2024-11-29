@@ -7,7 +7,7 @@ using std::vector;
 
 struct TKeyItem {
     //TKeyItem(int ID, const char* graphic, const char* subscript);
-    TKeyItem(int ID, int code_y, int code_x, const char* graphic, const char* subscript, const char* label,vector<int>);
+    TKeyItem(int ID, int code, int code_y, int code_x, const char* graphic, const char* subscript, const char* label,vector<int>);
 
     //int fRow;
     //int fColumn;

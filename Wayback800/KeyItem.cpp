@@ -12,7 +12,7 @@
 {
 }*/
 
-TKeyItem::TKeyItem( int ID, int code_y,int code_x, const char* graphic, const char* subscript, const char* label, vector<int> sdl_keys0)
+TKeyItem::TKeyItem( int ID, int code, int code_y,int code_x, const char* graphic, const char* subscript, const char* label, vector<int> sdl_keys0)
     : //fRow(ID / 10)
     //, fColumn(ID % 10)
     //, 

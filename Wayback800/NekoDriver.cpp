@@ -40,8 +40,8 @@ TNekoDriver::TNekoDriver()
         // 0~128 
         volume0array[i] = (unsigned char*)fBROMBuffer + i * 0x8000;
         volume1array[i] = volume0array[i];
-        volume2array[i] = volume0array[i];
-        volume3array[i] = volume0array[i];
+        //volume2array[i] = volume0array[i];
+        //volume3array[i] = volume0array[i];
 
         volume0array[i + 128] = (unsigned char*)fBROMBuffer + (i + 128) * 0x8000;
         volume1array[i + 128] = volume0array[i + 128] + 128 * 0x8000;
