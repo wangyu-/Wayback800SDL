@@ -447,7 +447,7 @@ void EmulatorThread::do_run(uint64_t target_cycle)
 {
         bool disable_interrupt = false;
         bool perdictable_nmi = true;
-        bool debug_pc = false;
+        bool debug_pc = true;
         while (totalcycle < target_cycle) {
             if (matrixupdated) {
                 matrixupdated = false;
