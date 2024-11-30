@@ -442,6 +442,7 @@ void EmulatorThread::pre_run()
 
 void EmulatorThread::do_run(uint64_t target_cycle)
 {
+        bool disable_interrupt = false;
         while (totalcycle < target_cycle) {
             if (matrixupdated) {
                 matrixupdated = false;
@@ -467,7 +468,7 @@ void EmulatorThread::do_run(uint64_t target_cycle)
             }
 
             // NMI > IRQ
-            if ((gThreadFlags & 0x08) != 0) {
+            if ((gThreadFlags & 0x08) != 0 && !disable_interrupt) {
                 gThreadFlags &= 0xFFF7u; // remove 0x08 NMI Flag
                 // FIXME: NO MORE REVERSE
                 g_nmi = TRUE; // next CpuExecute will execute two instructions
@@ -516,7 +517,7 @@ void EmulatorThread::do_run(uint64_t target_cycle)
 
             gDeadlockCounter++;
             bool needirq = false;
-            if (gDeadlockCounter == 6000) {
+            if (gDeadlockCounter == 6000 && !disable_interrupt) {
                 // overflowed
                 gDeadlockCounter = 0;
                 if ((gThreadFlags & 0x80u) == 0) {
@@ -538,7 +539,7 @@ void EmulatorThread::do_run(uint64_t target_cycle)
                 needirq = KeepTimer01(CpuTicks);
                 }
             
-            if (needirq) {
+            if (needirq&& !disable_interrupt) {
                 CheckTimebaseSetTimer0IntStatusAddIRQFlag();
             }
             
