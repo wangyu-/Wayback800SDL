@@ -5,12 +5,16 @@ extern "C" {
 #include "w65c02macro.h"
 }
 
+#include "stdio.h"
+
 
 // Read/Write Cycle definitions
 #define CPU_RDWR_CYC    1
 //#define DMA_RDWR_CYC    4
 //#define SPR_RDWR_CYC    3
-
+uint8_t Peek16(uint16_t addr){
+    return CPU_PEEK_SAFE(addr);
+}
 void xILLEGAL(void);
 
 DWORD CpuExecute(void)

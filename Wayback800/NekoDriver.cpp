@@ -18,6 +18,7 @@ extern "C" {
 #include "comm.h"
 #include <string.h>
 #include <limits.h>
+#include "disassembler.h"
 
 TScreenBuffer renderLCDBuffer;
 
@@ -424,6 +425,7 @@ void EmulatorThread::run_bak()
 }*/
 
 
+long long  tick=0;
 unsigned int nmistart;
 void EmulatorThread::pre_run()
 {
@@ -482,6 +484,21 @@ void EmulatorThread::do_run(uint64_t target_cycle)
                 qDebug("ggv wanna IRQ.");
                 gDeadlockCounter--; // wrong behavior of wqxsim
             }
+
+            int GetPC(void);
+            auto reg_pc=GetPC();
+            unsigned char buf[10];
+			buf[0]=CPU_PEEK_SAFE(reg_pc);
+			buf[1]=CPU_PEEK_SAFE(reg_pc+1);
+			buf[2]=CPU_PEEK_SAFE(reg_pc+2);
+			buf[3]=0;
+            //printf("%s\n",disassemble_next(buf,pc).c_str());
+
+            tick++;
+            printf("tick=%lld ",tick /*, reg_pc*/);
+			printf("%02x %02x %02x %02x; ",CPU_PEEK_SAFE(reg_pc), CPU_PEEK_SAFE(reg_pc+1),CPU_PEEK_SAFE(reg_pc+2),CPU_PEEK_SAFE(reg_pc+3));
+			printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",zpioregs[0x00], zpioregs[0x0a], zpioregs[0x0d], zpioregs[0x0f],mA,mX,mY,mSP,PS(),disassemble_next(buf,reg_pc).c_str());
+            printf("\n");
 
             DWORD CpuTicks = CpuExecute();
             //if(CpuTicks>30) printf("oops %d\n",CpuTicks);

@@ -127,6 +127,15 @@ inline uint8_t CPU_PEEK(uint16_t addr){
     }
 }
 
+inline uint8_t CPU_PEEK_SAFE(uint16_t addr){
+    if(addr >= 0x80) {
+      return *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF));
+    }else{
+      extern unsigned char zpioregs[0x40];
+      return (addr >= iorange?zp40ptr[addr-0x40]: zpioregs[addr]);
+    }
+}
+
 inline uint16_t CPU_PEEKW(uint16_t addr){
     return  (CPU_PEEK((addr)) + (CPU_PEEK((addr + 1)) << 8));
 }
